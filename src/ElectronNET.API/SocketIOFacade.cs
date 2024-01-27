@@ -67,7 +67,7 @@ internal class SocketIoFacade
         _socket.On(eventName, response =>
         {
             var value = response.GetValue<object>();
-            Console.WriteLine($"Called Event {eventName} - data {value}");
+            //Console.WriteLine($"Called Event {eventName} - data {value}");
             Task.Run(() => action(value));
         });
     }
