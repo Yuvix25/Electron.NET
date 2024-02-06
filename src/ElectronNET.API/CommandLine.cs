@@ -39,11 +39,23 @@ namespace ElectronNET.API
         /// <param name="the_switch">A command-line switch, without the leading --</param>
         /// <param name="value">(optional) - A value for the given switch</param>
         /// <remarks>
-        /// Note: This will not affect process.argv. The intended usage of this function is to control Chromium's behavior.
+        /// Note: This will not affect process.argv. The intended usage of this function is to control Chromium's behavior. This might only come into effect the next time the app is launched.
         /// </remarks>
         public void AppendSwitch(string the_switch, string value = "")
         {
             BridgeConnector.Socket.Emit("appCommandLineAppendSwitch", the_switch, value);
+        }
+
+        /// <summary>
+        /// Removes a switch from Chromium's command line.
+        /// </summary>
+        /// <param name="the_switch">A command-line switch, without the leading --</param>
+        /// <remarks>
+        /// Note: This will not affect process.argv. The intended usage of this function is to control Chromium's behavior. This will only come into effect the next time the app is launched.
+        /// </remarks>
+        public void RemoveSwitch(string the_switch)
+        {
+            BridgeConnector.Socket.Emit("appCommandLineRemoveSwitch", the_switch);
         }
 
         /// <summary>

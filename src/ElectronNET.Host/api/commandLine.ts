@@ -1,4 +1,5 @@
 import { Socket } from 'net';
+import { setArg, removeArg } from '../main.js';
 let electronSocket;
 
 export = (socket: Socket, app: Electron.App) => {
@@ -6,6 +7,10 @@ export = (socket: Socket, app: Electron.App) => {
 
     socket.on('appCommandLineAppendSwitch', (the_switch: string, value: string) => {
         app.commandLine.appendSwitch(the_switch, value);
+        setArg(the_switch, value);
+    });
+    socket.on('appCommandLineRemoveSwitch', (the_switch) => {
+        removeArg(the_switch);
     });
 
     socket.on('appCommandLineAppendArgument', (value: string) => {

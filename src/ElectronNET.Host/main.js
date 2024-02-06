@@ -5,6 +5,7 @@ const path = require('path');
 const cProcess = require('child_process').spawn;
 const portscanner = require('portscanner');
 const { imageSize } = require('image-size');
+const fs = require('fs');
 let io, server, browserWindows, ipc, apiProcess, loadURL;
 let appApi, menu, dialogApi, notification, tray, webContents;
 let globalShortcut, shellApi, screen, clipboard, autoUpdater;
@@ -25,6 +26,73 @@ if (app.commandLine.hasSwitch('manifest')) {
 if (app.commandLine.hasSwitch('watch')) {
   watchable = true;
 }
+
+const argsFileName = 'electron.args';
+const argsFilePath = path.join(app.getPath('userData'), argsFileName);
+
+function getArgs() {
+  let args = [];
+  if (fs.existsSync(argsFilePath)) {
+    args = fs.readFileSync(argsFilePath, 'utf8').split('\n').map((arg) => {
+      const parts = arg.split('=', 2);
+      const arg_name = parts[0].replace(/^--/, '');
+      if (parts.length > 1) {
+        return [arg_name, parts[1]];
+      }
+      return [arg_name];
+    })
+  }
+  return args;
+}
+
+function saveArgs(args) {
+  fs.writeFileSync(argsFilePath, args.map((arg) => {
+    if (arg[1] != null) {
+      return `--${arg[0]}=${arg[1]}`;
+    }
+    return `--${arg[0]}`;
+  }).join('\n'));
+}
+
+function setArg(arg_name, value = null) {
+  const args = getArgs();
+
+  const arg = args.find((arg) => arg[0] === arg_name);
+  if (arg) {
+    arg[1] = value;
+  } else {
+    args.push([arg_name, value]);
+  }
+  saveArgs(args);
+}
+
+function removeArg(arg_name) {
+  const args = getArgs();
+  const index = args.findIndex((arg) => arg[0] === arg_name);
+  if (index !== -1) {
+    args.splice(index, 1);
+  }
+  saveArgs(args);
+}
+
+function loadArgs(args) {
+  args.forEach((arg) => {
+    if (arg[1] != null) {
+      app.commandLine.appendSwitch(arg[0], arg[1]);
+    } else {
+      app.commandLine.appendSwitch(arg[0]);
+    }
+  });
+}
+
+module.exports = {
+  getArgs,
+  loadArgs,
+  setArg,
+  removeArg,
+};
+
+loadArgs(getArgs());
 
 let currentBinPath = path.join(__dirname.replace('app.asar', ''), 'bin');
 let manifestJsonFilePath = path.join(currentBinPath, manifestJsonFileName);
