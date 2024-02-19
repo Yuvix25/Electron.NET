@@ -752,6 +752,10 @@ export = (socket: Socket, app: Electron.App) => {
         getWindowById(id).setVibrancy(type);
     });
 
+    socket.on('browserWindowSetBackgroundColor', (id, backgroundColor) => {
+        getWindowById(id).setBackgroundColor(backgroundColor);
+    });
+
     socket.on('browserWindow-setBrowserView', (id, browserViewId) => {
         getWindowById(id).setBrowserView(browserViewMediateService(browserViewId));
     });
