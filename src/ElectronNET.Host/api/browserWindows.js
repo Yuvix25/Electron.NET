@@ -580,6 +580,9 @@ module.exports = (socket, app) => {
     socket.on('browserWindowSetVibrancy', (id, type) => {
         getWindowById(id).setVibrancy(type);
     });
+    socket.on('browserWindowSetBackgroundColor', (id, backgroundColor) => {
+        getWindowById(id).setBackgroundColor(backgroundColor);
+    });
     socket.on('browserWindow-setBrowserView', (id, browserViewId) => {
         getWindowById(id).setBrowserView((0, browserView_1.browserViewMediateService)(browserViewId));
     });

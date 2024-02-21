@@ -2233,6 +2233,17 @@ public class BrowserWindow
     }
 
     /// <summary>
+    /// window's background color in Hex, RGB, RGBA, HSL, HSLA or named CSS color format.
+    /// Alpha in #AARRGGBB format is supported if transparent is set to true.
+    /// Default is #FFF (white)    
+    /// </summary>
+    /// <param name="backgroundColor">The color in Hex, RGB, RGBA, HSL, HSLA or named CSS color format</param>
+    public void SetBackgroundColor(string backgroundColor) 
+    {
+        BridgeConnector.Socket.Emit("browserWindowSetBackgroundColor", Id, backgroundColor);
+    }
+
+    /// <summary>
     /// Render and control web pages.
     /// </summary>
     public WebContents WebContents { get; internal set; }
